@@ -1,8 +1,9 @@
 import { avatarBgColors, avatars } from "../data/constants";
 import getRandomAvatar from "./getRandomAvatar";
+import { isAddress } from "web3-validator";
 
 const getAvatarByAddress = (address) => {
-  if (!address || !address?.startsWith('0x')) return getRandomAvatar();
+  if (!address || !isAddress(address)) return getRandomAvatar();
 
   const trimmedAddress = address.slice(2);
   const firstPart = trimmedAddress.slice(0, 4);
