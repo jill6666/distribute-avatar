@@ -1,9 +1,9 @@
 import "./App.css";
 import { mockEvmAddress } from "./data/mockAddress";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import getAvatarByAddress from "./utils/getAvatarByAddress";
-import shortenAddress from "./utils/shortenAddress";
-import { avatars, avatarBgColors } from "./data/constants"; 
+import { avatars, avatarBgColors } from "./data/constants";
+import UserItem from "./components/UserItem";
 
 // cache the avatar image
 const avatarCache = new Map();
@@ -13,172 +13,64 @@ function App() {
   const [character, setCharacter] = useState("");
   const [color, setColor] = useState("");
 
-  useEffect(() => {
-    console.log({ character, color });
-    if (!character && !color) setAddressList(mockEvmAddress);
-    else setAddressList(mockEvmAddress.filter((address) => {
-      if (!avatarCache.has(address)) avatarCache.set(address, getAvatarByAddress(address));
-      const { avatarImage, bgColor } = avatarCache.get(address);
-      return (!character || avatarImage === character) && (!color || bgColor === color);
-    }));
-  }, [character, color]);
+  const handleAddUser = (e) => {
+    const address = e.target.value;
+    if (!address || !address.startsWith("0x")) return;
+    setAddressList(prev => [address, ...prev]);
+    e.target.value = "";
+  };
 
   return (
-    <div style={{
-        position: "relative",
-      }}
-    >
-      <div style={{
-          display: "flex",
-          justifyContent: "start",
-          alignItems: "center",
-          height: "100px",
-          fontSize: "24px",
-          fontWeight: "bold",
-          color: "#000",
-          position: "sticky",
-          top: "0",
-          backgroundColor: "#fff",
-          boxShadow: "0 2px 4px 0 rgba(0, 0, 0, 0.1)",
-          width: "100%",
-          padding: "0 20px",
-          color: "#3e3e3e",
-        }}
-      >
+    <div className="relative">
+      <div className="w-full text-gray flex justify-start items-center h-[100px] text-lg font-bold sticky top-0 bg-white px-4 shadow-md">
         <img
           src="/images/chiikawa.webp"
           alt="avatar"
-          style={{
-            width: "40px",
-            height: "40px",
-            borderRadius: "50%",
-            objectFit: "cover",
-            border: "1px solid #3e3e3e",
-            marginRight: "10px",
-          }}
+          className="rounded-full border border-gray-400 mr-3 shadow-md w-10 h-10 object-cover"
         />
         User List
       </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          height: "calc(100vh - 100px)",
-          backgroundColor: "#f0f0f0",
-          overflowY: "hidden",
-        }}
-      >
-        <div style={{
-          width: "40%",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "start",
-          gap: "10px",
-          padding: "20px",
-          backgroundColor: "#fff",
-          height: "calc(100vh - 140px)",
-          overflowY: "scroll",
-        }}>
+      <div className="w-full flex justify-between h-[calc(100vh-100px)] bg-gray-100 overflow-hidden">
+        <div className="flex flex-col items-start gap-4 p-5 bg-white w-2/5 h-[calc(100vh-100px)] overflow-y-scroll">
           {addressList.map((address, index) => {
             if (!avatarCache.has(address)) {
               avatarCache.set(address, getAvatarByAddress(address));
             }
             const { avatarImage, bgColor, name } = avatarCache.get(address);
+            if (character || color) {
+              if ((character && avatarImage !== character) || (color && bgColor !== color)) {
+                return null;
+              }
+            }
             return (
-              <div
+              <UserItem
                 key={`${address}-${index}`}
-                className="avatar"
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "10px",
-                  }}
-                >
-                  <span style={{ width: "24px" }}>{index + 1}</span>
-                  <img
-                    src={avatarImage}
-                    alt="avatar"
-                    style={{
-                      backgroundColor: bgColor,
-                      width: "40px",
-                      height: "40px",
-                      borderRadius: "50%",
-                      objectFit: "cover",
-                    }}
-                  />
-                  <span style={{
-                    display: "block",
-                    marginTop: "10px",
-                    color: "#000",
-                    textAlign: "center",
-                  }}>
-                    {shortenAddress(address)}
-                  </span>
-                </div>
-                <div style={{ display: "flex", gap: "10px" }}>
-                  <span>{name}</span>
-                </div>
-              </div>
+                index={index}
+                address={address}
+                avatarImage={avatarImage}
+                bgColor={bgColor}
+                name={name}
+              />
             );
           })}
         </div>
-        <div
-          style={{
-            width: "60%",
-            padding: "20px",
-            backgroundColor: "#f0f0f0",
-            height: "calc(100vh - 140px)",
-            overflowY: "scroll",
-          }}
-        >
+        <div className="flex flex-col items-start gap-4 p-5 bg-gray-100 w-3/5">
           <div>
             <span>Character:</span>
-            <div
-              style={{
-                marginTop: "10px",
-                display: "flex",
-                flexDirection: "row",
-                gap: "10px",
-                flexWrap: "wrap",
-              }}
-            >
+            <div className="flex gap-4 flex-wrap mt-2">
               {avatars.map((avatar, index) => {
                 const isActivated = character === avatar.url;
                 return (
                   <button
                     onClick={() => setCharacter(prev => prev === avatar.url ? "" : avatar.url)}
                     key={`${avatar.name}-${index}`}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "10px",
-                      backgroundColor: "#fff",
-                      borderRadius: "12px",
-                      padding: "0px 10px",
-                      border: "none",
-                      boxShadow: isActivated ? "0 2px 4px 0 rgba(0, 0, 0, 0.1)" : "none",
-                      fontWeight: isActivated ? "bold" : "normal",
-                      minWidth: "140px",
-                    }}
+                    className="flex items-center gap-4 bg-white rounded-lg px-2 py-1 shadow-md min-w-[140px] border-none"
+                    style={{ fontWeight: isActivated ? "bold" : "normal" }}
                   >
                     <img
                       src={avatar.url}
                       alt="avatar"
-                      style={{
-                        width: "40px",
-                        height: "40px",
-                        borderRadius: "50%",
-                        objectFit: "cover",
-                        paddingBottom: "10px",
-                      }}
+                      className="rounded-full border border-gray-400 w-10 h-10 object-cover"
                     />
                     <span>{avatar.name}</span>
                   </button>
@@ -188,44 +80,37 @@ function App() {
           </div>
           <div>
             <span>Color:</span>
-            <div
-              style={{
-                marginTop: "10px",
-                display: "flex",
-                flexDirection: "row",
-                gap: "10px",
-                flexWrap: "wrap",
-              }}
-            >
+            <div className="flex gap-4 mt-2 flex-wrap">
               {avatarBgColors.map((_color, index) => {
                 const isActivated = color === _color;
                 return (
                   <button
                     onClick={() => setColor(prev => prev === _color ? "" : _color)}
                     key={`${_color}-${index}`}
+                    className="flex items-center gap-4 rounded-lg p-2 shadow-md w-[100px] border-none"
                     style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "10px",
-                      borderRadius: "12px",
-                      padding: "10px 10px",
-                      width: "100px",
                       backgroundColor: isActivated ? "#f0f0f0" : _color,
                       border: isActivated ? `1px solid ${_color}` : "1px solid #fff",
                     }}
                   >
-                    <span
-                      style={{
-                        margin: "0 auto",
-                        color: isActivated ? _color : "#fff",
-                      }}
-                    >
+                    <span className="m-auto" style={{ color: isActivated ? _color : "#fff" }}>
                       {_color}
                     </span>
                   </button>
                 );
               })}
             </div>
+          </div>
+          <div>
+            Add New User:
+            <input
+              type="text"
+              className="border border-gray-400 rounded-lg px-2 py-1 w-full mt-2"
+              placeholder="Enter user address"
+              onKeyUp={(e) => {
+                if (e.key === "Enter") handleAddUser(e)
+              }}
+            />
           </div>
         </div>
       </div>
