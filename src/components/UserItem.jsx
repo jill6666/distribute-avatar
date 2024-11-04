@@ -15,7 +15,7 @@ function UserItem({
         <img
           src={avatarImage}
           alt="avatar"
-          className="rounded-full border border-gray-400 w-10 h-10 object-cover"
+          className="rounded-full border border-gray-100 w-10 h-10 object-cover"
           style={{
             backgroundColor: bgColor,
           }}
