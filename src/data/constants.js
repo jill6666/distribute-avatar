@@ -32,3 +32,6 @@ export const avatarBgColors = [
     "#FF6347",
     "#FF4500",
 ];
+
+// The avatars are evenly distributed across categories, ensuring a balanced and visually diverse set of avatars
+export const userAvatarMap = new Map(avatarBgColors.map((color) => [color, avatars]));

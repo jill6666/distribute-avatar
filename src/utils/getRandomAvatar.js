@@ -1,12 +1,12 @@
-import { avatarBgColors, avatars } from "../data/constants";
+import { avatarBgColors, userAvatarMap } from "../data/constants";
 
 const getRandomAvatar = () => {
-  const avatar = avatars[Math.floor(Math.random() * avatars.length)];
-  const bgColor = avatarBgColors[Math.floor(Math.random() * avatarBgColors.length)];
+  const bgColorIndex = Math.floor(Math.random() * avatarBgColors.length);
+  const bgColor = avatarBgColors[bgColorIndex];
+  const avatarIndex = Math.floor(Math.random() * userAvatarMap.get(bgColor).length);
+  const avatar = userAvatarMap.get(bgColor)[avatarIndex];
+
   return { avatar: avatar.url, bgColor, name: avatar.name };
-};
-const shortenAddress = (address) => {
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
 };
 
 export default getRandomAvatar;
