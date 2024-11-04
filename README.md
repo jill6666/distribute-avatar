@@ -1,27 +1,33 @@
 # Distribute Avatar to EVM Address
 
+![Demo](public/images/demo.gif)
+
 ## Description
 
-Distribute avatars to your users with EVM addresses simply, ensuring each address has a unique avatar.
+This project assigns a unique avatar to each EVM address, enabling a visually distinct representation for every user based on their address. Perfect for dApps that want to give users a unique visual identifier without needing a database.
+
+**Demo**: [distribute-avatar.vercel.app](https://distribute-avatar.vercel.app/)
 
 ## Features
 
-- Add new users and validate it's an address.
-- Filter by characters.
-- Filter by avatar background colors.
+- **Unique Avatars**: Ensure each EVM address receives a unique avatar.
+- **Address Validation**: Add and verify valid EVM addresses for users.
+- **Character Filtering**: Filter users by specific characters in their addresses.
+- **Color Filtering**: Filter users based on avatar background colors.
 
 ## Installation
 
 1. Clone the repository.
-2. Install the dependencies by running the following command:
+2. Install the dependencies
     ```
     npm install
     ```
 
 ## Usage
 
-1. Run the project by executing the following command:
+1. Start the application:
     ```
     npm start
     ```
-2. Open your browser and navigate to `http://localhost:3000`.
+
+2. Open your browser and go to `http://localhost:3000`.
